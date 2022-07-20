@@ -1,0 +1,117 @@
+.s-alert-box {
+    z-index: 9999;
+    border-radius: 5px;
+    padding: 15px 40px;
+    border: 1px solid #cbd1d2;
+}
+
+.s-alert-error {
+    color: #541217 !important;
+    background: white !important;
+    border-top: 3px solid #ff5660 !important;
+}
+
+.s-alert-success {
+    color: #205414 !important;
+    background: white !important;
+    border-top: 3px solid #a6cea9 !important;
+}
+
+.btn-danger-custom {
+    color: #541217;
+    background: white;
+    border: 0.8px solid #ff5660;
+    border-top: 5px solid #ff5660;
+}
+
+.btn-success-custom {
+    color: #205414;
+    background: white;
+    border: 0.8px solid #69a456;
+    border-top: 5px solid #69a456;
+}
+
+.btn-warning-custom {
+    color: #ff9800;
+    background: white;
+    border: 0.8px solid #ffc107;
+    border-top: 5px solid #ffc107;
+}
+
+.btn-secondary-custom {
+    color: #262d37;
+    background: white;
+    border: 0.8px solid #25363a;
+    border-top: 5px solid #25363a;
+}
+
+.badge-danger {
+    color: #262d37;
+    background: white;
+    border: 0.8px solid #ff5660;
+    border-top: 5px solid #ff5660;
+}
+
+.badge-success {
+    color: #262d37;
+    background: white;
+    border: 0.8px solid #69a456;
+    border-top: 5px solid #69a456;
+}
+
+.badge-warning {
+    color: #262d37;
+    background: white;
+    border: 0.8px solid #ffc107;
+    border-top: 5px solid #ffc107;
+}
+
+.badge-secondary {
+    color: #262d37;
+    background: white;
+    border: 0.8px solid #607d8b;
+    border-top: 5px solid #607d8b;
+}
+
+.badge-dark {
+    color: #262d37;
+    background: white;
+    border: 0.8px solid #25363a;
+    border-top: 5px solid #25363a;
+}
+
+.badge-info {
+    color: #262d37;
+    background: white;
+    border: 0.8px solid #339dab;
+    border-top: 5px solid #339dab;
+}
+
+.button-adjust {
+    margin-top: 2.4rem;
+}
+
+.list-info {
+    color: #0c5460;
+    background-color: white;
+    border-color: #bee5eb;
+}
+
+.list-info:hover {
+    color: #0c5460;
+    background-color: #f7fdfb;
+    border-color: #bee5eb;
+}
+
+.list-info .badge {
+    position: relative;
+    top: -2px;
+    padding: 7px;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: #0c5460;
+    border-color: #0c5460;
+}
