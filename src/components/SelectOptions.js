@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Select from 'react-select';
 
 export default class SelectOptions extends Component {
 
@@ -15,7 +14,6 @@ export default class SelectOptions extends Component {
                 <label className="col-form-label text-right" htmlFor="tag">{this.props.label}</label>
                 <div className="row">
                     <div className="col-12">
-                        <Select {...this.props} onChange={this.onChange}/>
                     </div>
                     <div className="col">{this.props.children}</div>
                 </div>
