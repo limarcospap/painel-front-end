@@ -1,0 +1,55 @@
+.box {
+    display: grid;
+}
+
+.box-element {
+    margin:10px;
+    min-width: 300px;
+}
+
+.apply-button {
+    width: 100px;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.input-custom {
+    min-width: 300px;
+}
+
+.block {
+    display: block;
+}
+
+.button-custom {
+    font-size: 14px;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.button-text {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.divider {
+    border-bottom: solid 1px #E6E6E6;
+    margin: 5px;
+    padding-bottom: 5px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+}
+.align-right {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.align-left {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.sniff-text {
+    min-width: 250px;
+}

@@ -15,7 +15,10 @@ export default class Navbar extends Component {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item active">
-                            <a className="nav-link" href="/logs">Logs</a>
+                            <a className="nav-link" href="/flows">Monitor de Fluxos</a>
+                        </li>
+                        <li className="nav-item active">
+                            <a className="nav-link" href="/def-prot-actions">Defesas Executadas</a>
                         </li>
                     </ul>
                     <ul className="navbar-nav ml-auto nav-flex-icons">
