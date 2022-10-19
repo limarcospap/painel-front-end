@@ -27,7 +27,7 @@ export default function DefProtActions(props) {
       {saidas.map((saida) => {
         const header = `Id: ${saida['_id']} | Tipo de Ataque: ${saida['ataque']}`
         return (
-          <Panel toggleable header={header}>
+          <Panel collapsed={true} toggleable header={header}>
             <JSONPretty id="json-pretty" data={saida}></JSONPretty>
           </Panel>
         );

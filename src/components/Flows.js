@@ -1,7 +1,5 @@
 import React, { useState, useRef } from "react";
 import useWebSocket from "react-use-websocket";
-import { HotTable, HotColumn } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -9,10 +7,9 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import "../styles/Basic.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-// register Handsontable's modules
-registerAllModules();
-
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { FilterMatchMode, FilterOperator } from "primereact/api";
 var title = (text) => {
   return <h4>{text}</h4>;
 };
@@ -42,6 +39,12 @@ const classifications = [
   { name: "Malicioso", value: "bot" },
 ];
 
+const classificationRenderer = {
+  bot: "Malicioso",
+  normal: "Normal",
+  suspicious: "Suspeito",
+};
+
 // var classification = {
 //   0: "Não malicioso",
 //   1: "Malicioso",
@@ -53,37 +56,51 @@ export default function Flows(props) {
   const toast = useRef(null);
   const websocketURL = "ws://localhost:8087/api/logs/refresh-logs";
   const [obj, setObj] = useState([]);
+  const [flows, setFlows] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
   const [defense, setDefense] = useState("");
-  const [protocol, setProtocol] = useState("");
-  const [classification, setClassification] = useState("");
   const [ipVictim, setIpVictim] = useState("192.168.0.1");
   const [ipAttacker, setIpAttacker] = useState("192.168.0.2");
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    Class: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+    },
+    Protocolo: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+    },
+  });
 
   // WS connection
   const { sendMessage, lastMessage } = useWebSocket(websocketURL, {
     onOpen: () => console.log("Connected to teste"),
     onMessage: (message) => {
       let received = JSON.parse(message.data);
-      if (received.length > obj.length) {
-        if (obj.length != 0) {
+      if (received.length > flows.length) {
+        const numberOfFlows = received.length - flows.length;
+        if (flows.length != 0) {
           toast.current.show({
             severity: "info",
             life: 3000,
             sticky: true,
-            summary: "Novo fluxo adicionado!",
+            summary: `Foi(ram) adicionado(s) ${numberOfFlows} novos fluxo(s)`,
           });
         }
-        setObj(received);
+        setFlows(generateDataView(received));
       }
     },
     shouldReconnect: (closeEvent) => false,
   });
   // Rendering data on HT
-  var generateDataView = () => {
-    return obj.map((item) => {
+  var generateDataView = (data) => {
+    return data.map((item) => {
+      console.log(item.RefereePrediction);
       return {
-        Class: item.RefereePrediction,
+        Class: item.hasOwnProperty("Label")
+          ? classificationRenderer[item.Label]
+          : classificationRenderer[item.RefereePrediction],
         sToS: tos[item.sTos],
         dToS: tos[item.dTos],
         Protocolo: item.Proto_tcp == 0 ? "UDP" : "TCP",
@@ -92,7 +109,7 @@ export default function Flows(props) {
         TotPkts: item.TotPkts,
         Dur: item.Dur,
         Src: item.src,
-        Dst: item.dst
+        Dst: item.dst,
       };
     });
   };
@@ -117,7 +134,10 @@ export default function Flows(props) {
     <div>
       <Toast ref={toast} position="bottom-center" />
 
-      <div class="divider"><FontAwesomeIcon icon="fa-light fa-monitor-waveform" />{title("Monitor de Fluxos")}</div>
+      <div class="divider">
+        <FontAwesomeIcon icon="fa-light fa-monitor-waveform" />
+        {title("Monitor de Fluxos")}
+      </div>
       <div className="divider box">
         <div className="align-left">
           <Button
@@ -127,48 +147,34 @@ export default function Flows(props) {
             Selecionar Defesa
           </Button>
         </div>
-        <div>
-          <span>Filtros:</span>
-        </div>
-        <div>
-          <Dropdown
-            optionLabel="name"
-            value={protocol}
-            options={protocols}
-            onChange={(e) => setProtocol(e.value)}
-            placeholder="Protocolo"
-          ></Dropdown>
-        </div>
-        <div>
-          <Dropdown
-            optionLabel="name"
-            value={classification}
-            options={classifications}
-            onChange={(e) => setClassification(e.value)}
-            placeholder="Classificação"
-          ></Dropdown>
-        </div>
       </div>
-
-      <HotTable
-        settings={{ licenseKey: "non-commercial-and-evaluation" }}
-        data={generateDataView()}
-        colHeaders={true}
-        rowHeaders={false}
-        width="auto"
-        height="auto"
-      >
-        <HotColumn data="Protocolo" title="Protocolo" />
-        <HotColumn data="sToS" title="Tipo Serviço da Fonte (sToS)" />
-        <HotColumn data="dToS" title="Tipo Serviço do Destino (sToS)" />
-        <HotColumn data="SrcBytes" title="Bytes Fonte" />
-        <HotColumn data="TotBytes" title="Total Bytes" />
-        <HotColumn data="Dur" title="Duração" />
-        <HotColumn data="TotPkts" title="Total Pacotes" />
-        <HotColumn data="Dst" title="Ip Destino" />
-        <HotColumn data="Src" title="Ip Origem" />
-        <HotColumn data="Class" title="Classificação" />
-      </HotTable>
+      <div>
+        <DataTable
+          value={flows}
+          responsiveLayout="scroll"
+          selectionMode="single"
+          scrollable
+          scrollHeight="600px"
+          paginator
+          rows={10}
+          filters={filters}
+          onFilter={(e) => setFilters(e.filters)}
+          stateStorage="local"
+          stateKey="dt-state-demo-local"
+          emptyMessage="Não foram encontrados fluxos para esses filtros."
+        >
+          <Column field="Protocolo" header="Protocolo" filter />
+          <Column field="sToS" header="Tipo Serviço da Fonte (sToS)" />
+          <Column field="dToS" header="Tipo Serviço do Destino (sToS)" />
+          <Column field="SrcBytes" header="Bytes Fonte" />
+          <Column field="TotBytes" header="Total Bytes" />
+          <Column field="Dur" header="Duração" />
+          <Column field="TotPkts" header="Total Pacotes" />
+          <Column field="Dst" header="Ip Destino" />
+          <Column field="Src" header="Ip Origem" />
+          <Column field="Class" header="Classificação" filter />
+        </DataTable>
+      </div>
       <hr />
       <Dialog
         header="Selecione uma defesa"
